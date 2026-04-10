@@ -154,16 +154,7 @@
     <h1>CMD500 Witmar Pre season</h1>
     <div class="subtitle">MTG WITMAR Pre Season ranking</div>
 
-    <div class="card" style="margin-bottom:24px;">
-      <h2>Google Sheets</h2>
-      <div class="hint">Cole a URL CSV publicada da sua planilha. O dashboard tenta ler colunas como <strong>Player</strong>, <strong>Deck</strong>, <strong>Placement</strong>, <strong>Points</strong>, <strong>Game</strong> e, opcionalmente, <strong>URL</strong>.</div>
-      <div class="controls">
-        <input id="sheetUrl" class="input" type="text" placeholder="https://docs.google.com/spreadsheets/d/.../gviz/tq?tqx=out:csv&sheet=Página1" value="https://docs.google.com/spreadsheets/d/e/2PACX-1vQocmyPOSSUkanGUBRY84jELjXrAdQryaUO1U-bCvz8Zf0VdklbEdW1AAnddJeehWwuoRVrIvjq5k5X/pub?gid=2062161422&single=true&output=csv" />
-        <button id="loadSheetBtn" class="btn btn-primary">Carregar planilha</button>
-        <button id="useSampleBtn" class="btn btn-secondary">Usar dados de exemplo</button>
-      </div>
-      <div id="statusMessage" class="status">Usando os dados de exemplo no momento.</div>
-    </div>
+
 
     <div class="grid" id="summaryCards"></div>
 
@@ -223,6 +214,17 @@
     </div>
   </div>
 
+    <div class="card" style="margin-bottom:24px;">
+      <h2>Google Sheets</h2>
+      <div class="hint">Cole a URL CSV publicada da sua planilha. O dashboard tenta ler colunas como <strong>Player</strong>, <strong>Deck</strong>, <strong>Placement</strong>, <strong>Points</strong>, <strong>Game</strong> e, opcionalmente, <strong>URL</strong>.</div>
+      <div class="controls">
+        <input id="sheetUrl" class="input" type="text" placeholder="https://docs.google.com/spreadsheets/d/.../gviz/tq?tqx=out:csv&sheet=Página1" value="https://docs.google.com/spreadsheets/d/e/2PACX-1vQocmyPOSSUkanGUBRY84jELjXrAdQryaUO1U-bCvz8Zf0VdklbEdW1AAnddJeehWwuoRVrIvjq5k5X/pub?gid=2062161422&single=true&output=csv" />
+        <button id="loadSheetBtn" class="btn btn-primary">Carregar planilha</button>
+        <button id="useSampleBtn" class="btn btn-secondary">Usar dados de exemplo</button>
+      </div>
+      <div id="statusMessage" class="status">Usando os dados de exemplo no momento.</div>
+    </div>
+  
   <script>
     const sampleData = [
       { game: 1, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 1, points: 3, deckUrl: '' },
