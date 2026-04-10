@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMD500 Witmar Pre season</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1, h2 {
+      margin: 0 0 12px;
+    }
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      overflow-x: auto;
+    }
+    .label {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+    .section {
+      margin-top: 24px;
+    }
+    .tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      min-width: 520px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #1f2937;
+      text-align: left;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    th {
+      color: #93c5fd;
+      font-weight: 700;
+    }
+    .badge {
+      display: inline-block;
+      background: #1d4ed8;
+      color: white;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 52px;
+      text-align: center;
+    }
+    .win { color: #4ade80; font-weight: 700; }
+    .loss { color: #cbd5e1; }
+    .draw { color: #facc15; font-weight: 700; }
+    .small { color: #94a3b8; font-size: 12px; }
+    .hint { color: #cbd5e1; font-size: 13px; line-height: 1.5; }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: #e5e7eb;
+      outline: none;
+    }
+    .btn {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-primary { background: #2563eb; }
+    .btn-secondary { background: #334155; }
+    .status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #93c5fd;
+    }
+    .game-separator td {
+      padding: 0;
+      height: 14px;
+      border: 0;
+      background: transparent;
+    }
+    .game-group-a td {
+      background: rgba(29, 78, 216, 0.08);
+    }
+    .game-group-b td {
+      background: rgba(148, 163, 184, 0.05);
+    }
+    a.deck-link {
+      color: #93c5fd;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    a.deck-link:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .tables { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .container { padding: 16px; }
+      .value { font-size: 26px; }
+      th, td { font-size: 13px; }
+      table { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CMD500 Witmar Pre season</h1>
+    <div class="subtitle">Visão simples das partidas entre amigos</div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <h2>Google Sheets</h2>
+      <div class="hint">Cole a URL CSV publicada da sua planilha. O dashboard tenta ler colunas como <strong>Player</strong>, <strong>Deck</strong>, <strong>Placement</strong>, <strong>Points</strong>, <strong>Game</strong> e, opcionalmente, <strong>URL</strong>.</div>
+      <div class="controls">
+        <input id="sheetUrl" class="input" type="text" placeholder="https://docs.google.com/spreadsheets/d/.../gviz/tq?tqx=out:csv&sheet=Página1" value="https://docs.google.com/spreadsheets/d/e/2PACX-1vQocmyPOSSUkanGUBRY84jELjXrAdQryaUO1U-bCvz8Zf0VdklbEdW1AAnddJeehWwuoRVrIvjq5k5X/pub?gid=2062161422&single=true&output=csv" />
+        <button id="loadSheetBtn" class="btn btn-primary">Carregar planilha</button>
+        <button id="useSampleBtn" class="btn btn-secondary">Usar dados de exemplo</button>
+      </div>
+      <div id="statusMessage" class="status">Usando os dados de exemplo no momento.</div>
+    </div>
+
+    <div class="grid" id="summaryCards"></div>
+
+    <div class="tables section">
+      <div class="card">
+        <h2>Ranking de Jogadores</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Jogador</th>
+              <th>Pontos</th>
+              <th>Winrate</th>
+              <th>Wins</th>
+              <th>Jogos</th>
+            </tr>
+          </thead>
+          <tbody id="playersTable"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Ranking de Decks</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Deck</th>
+              <th>Pontos</th>
+              <th>Winrate</th>
+              <th>Wins</th>
+              <th>Jogos</th>
+              <th>URL</th>
+            </tr>
+          </thead>
+          <tbody id="decksTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card section">
+      <h2>Todas as Participações</h2>
+      <div class="small">Pontuação atual: win = 3, draw = 1, loss = 0.</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Game</th>
+            <th>Player</th>
+            <th>Deck</th>
+            <th>Placement</th>
+            <th>Points</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+        <tbody id="gamesTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const sampleData = [
+      { game: 1, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 1, points: 3, deckUrl: '' },
+      { game: 1, player: 'Jeff', deck: 'Tiamat 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 1, player: 'Kevin', deck: 'Mutation 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 1, player: 'Nando', deck: 'Tatyova 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 2, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 1, points: 3, deckUrl: '' },
+      { game: 2, player: 'Jeff', deck: 'Tiamat 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 2, player: 'Kevin', deck: 'Mutation 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 2, player: 'Nando', deck: 'Tatyova 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 3, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 1, points: 3, deckUrl: '' },
+      { game: 3, player: 'Jeff', deck: 'Tiamat 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 3, player: 'Kevin', deck: 'Mutation 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 3, player: 'Nando', deck: 'Pako e Haldan 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 4, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 4, player: 'Jeff', deck: 'Tiamat 500', placement: 3, points: 0, deckUrl: '' },
+      { game: 4, player: 'Kevin', deck: 'Mutation 500', placement: 1, points: 3, deckUrl: '' },
+      { game: 4, player: 'Nando', deck: 'Pako e Haldan 500', placement: 2, points: 0, deckUrl: '' },
+      { game: 5, player: 'Luan', deck: 'Zur 500', placement: 3, points: 0, deckUrl: '' },
+      { game: 5, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 5, player: 'Nando', deck: 'Pako e Haldan 500', placement: 1, points: 3, deckUrl: '' },
+      { game: 5, player: 'Jeff', deck: 'Tiamat 500', placement: 2, points: 0, deckUrl: '' },
+      { game: 6, player: 'Luan', deck: 'Zur 500', placement: 1, points: 3, deckUrl: '' },
+      { game: 6, player: 'Gus', deck: 'Malcolm Kediss 500', placement: 4, points: 0, deckUrl: '' },
+      { game: 6, player: 'Kevin', deck: 'Mutation 500', placement: 2, points: 0, deckUrl: '' },
+      { game: 6, player: 'Marcos', deck: '? Land infinita', placement: 2, points: 0, deckUrl: '' }
+    ];
+
+    let currentData = sampleData.slice();
+    let withResult = addResult(currentData);
+
+    function addResult(rows) {
+      return rows.map(function (row) {
+        const placement = Number(row.placement || 0);
+        const points = Number(row.points || 0);
+        let result = 'Loss';
+        if (points >= 3 || placement === 1) {
+          result = 'Win';
+        } else if (points === 1) {
+          result = 'Draw';
+        }
+        return {
+          game: Number(row.game || 0),
+          player: String(row.player || ''),
+          deck: String(row.deck || ''),
+          placement: placement,
+          points: points,
+          deckUrl: String(row.deckUrl || row.url || ''),
+          result: result
+        };
+      });
+    }
+
+    function medalForRank(rank) {
+      if (rank === 1) return ' 👑';
+      if (rank === 2) return ' 🥈';
+      if (rank === 3) return ' 🥉';
+      return '';
+    }
+
+    function setStatus(message) {
+      document.getElementById('statusMessage').textContent = message;
+    }
+
+    function normalizeHeaderName(name) {
+      return String(name || '').trim().toLowerCase();
+    }
+
+    function parseCsvLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+
+      result.push(current);
+      return result;
+    }
+
+    function parseGoogleSheetCsv(text) {
+      const lines = text.split(/\r?\n/).filter(function (line) {
+        return line.trim() !== '';
+      });
+
+      if (lines.length < 2) return [];
+
+      const headers = parseCsvLine(lines[0]).map(normalizeHeaderName);
+      const parsedRows = [];
+      let inferredGame = 1;
+      let countInGame = 0;
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseCsvLine(lines[i]);
+        const row = {};
+
+        headers.forEach(function (header, index) {
+          row[header] = (values[index] || '').trim();
+        });
+
+        const player = row.player || row.jogador || '';
+        const deck = row.deck || row.commander || row.comandante || '';
+        const placementRaw = row.placement || row.colocacao || row['colocação'] || '';
+        const pointsRaw = row.points || row.pontos || '';
+        const deckUrl = row.url || row.deckurl || row.link || '';
+
+        if (!player && !deck && !placementRaw && !pointsRaw && !deckUrl) {
+          continue;
+        }
+
+        const explicitGame = row.game || row.partida || row.mesa || '';
+        const game = explicitGame ? Number(explicitGame) : inferredGame;
+
+        parsedRows.push({
+          game: game,
+          player: player,
+          deck: deck,
+          placement: Number(placementRaw || 0),
+          points: Number(pointsRaw || 0),
+          deckUrl: deckUrl
+        });
+
+        if (!explicitGame) {
+          countInGame += 1;
+          if (countInGame >= 4) {
+            inferredGame += 1;
+            countInGame = 0;
+          }
+        }
+      }
+
+      return parsedRows;
+    }
+
+    async function loadSheetData(url) {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Não foi possível carregar a planilha.');
+      }
+
+      const csvText = await response.text();
+      const parsed = parseGoogleSheetCsv(csvText);
+
+      if (!parsed.length) {
+        throw new Error('Nenhuma linha válida foi encontrada na planilha.');
+      }
+
+      currentData = parsed;
+      withResult = addResult(currentData);
+      renderAll();
+      setStatus('Planilha carregada com sucesso. ' + parsed.length + ' linhas importadas.');
+    }
+
+    function summarize() {
+      const totalGames = new Set(withResult.map(function (x) { return x.game; })).size;
+      const totalPlayers = new Set(withResult.map(function (x) { return x.player; })).size;
+      const totalDecks = new Set(withResult.map(function (x) { return x.deck; })).size;
+      const totalPoints = withResult.reduce(function (sum, x) { return sum + Number(x.points || 0); }, 0);
+
+      const cards = [
+        { label: 'Partidas', value: totalGames },
+        { label: 'Jogadores', value: totalPlayers },
+        { label: 'Decks', value: totalDecks },
+        { label: 'Pontos distribuídos', value: totalPoints }
+      ];
+
+      document.getElementById('summaryCards').innerHTML = cards.map(function (card) {
+        return '<div class="card">' +
+          '<div class="label">' + card.label + '</div>' +
+          '<div class="value">' + card.value + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function playerStats() {
+      const map = new Map();
+
+      withResult.forEach(function (row) {
+        if (!map.has(row.player)) {
+          map.set(row.player, { player: row.player, games: 0, wins: 0, points: 0 });
+        }
+        const item = map.get(row.player);
+        item.games += 1;
+        if (row.result === 'Win') item.wins += 1;
+        item.points += Number(row.points || 0);
+      });
+
+      return Array.from(map.values())
+        .map(function (x) {
+          return Object.assign({}, x, { winrate: ((x.wins / x.games) * 100).toFixed(1) });
+        })
+        .sort(function (a, b) {
+          return b.points - a.points || parseFloat(b.winrate) - parseFloat(a.winrate) || b.wins - a.wins || b.games - a.games || a.player.localeCompare(b.player);
+        });
+    }
+
+    function deckStats() {
+      const map = new Map();
+
+      withResult.forEach(function (row) {
+        if (!map.has(row.deck)) {
+          map.set(row.deck, { deck: row.deck, games: 0, wins: 0, points: 0, deckUrl: row.deckUrl || '' });
+        }
+        const item = map.get(row.deck);
+        item.games += 1;
+        if (row.result === 'Win') item.wins += 1;
+        item.points += Number(row.points || 0);
+        if (!item.deckUrl && row.deckUrl) item.deckUrl = row.deckUrl;
+      });
+
+      return Array.from(map.values())
+        .map(function (x) {
+          return Object.assign({}, x, { winrate: ((x.wins / x.games) * 100).toFixed(1) });
+        })
+        .sort(function (a, b) {
+          return b.points - a.points || parseFloat(b.winrate) - parseFloat(a.winrate) || b.wins - a.wins || b.games - a.games || a.deck.localeCompare(b.deck);
+        });
+    }
+
+    function renderPlayers() {
+      const rows = playerStats();
+      document.getElementById('playersTable').innerHTML = rows.map(function (row, i) {
+        const rank = i + 1;
+        return '<tr>' +
+          '<td><span class="badge">' + rank + medalForRank(rank) + '</span></td>' +
+          '<td>' + row.player + '</td>' +
+          '<td>' + row.points + '</td>' +
+          '<td>' + row.winrate + '%</td>' +
+          '<td>' + row.wins + '</td>' +
+          '<td>' + row.games + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function renderDecks() {
+      const rows = deckStats();
+      document.getElementById('decksTable').innerHTML = rows.map(function (row, i) {
+        const rank = i + 1;
+        const linkHtml = row.deckUrl ? '<a class="deck-link" href="' + row.deckUrl + '" target="_blank" rel="noopener noreferrer">Link</a>' : '-';
+        return '<tr>' +
+          '<td><span class="badge">' + rank + medalForRank(rank) + '</span></td>' +
+          '<td>' + row.deck + '</td>' +
+          '<td>' + row.points + '</td>' +
+          '<td>' + row.winrate + '%</td>' +
+          '<td>' + row.wins + '</td>' +
+          '<td>' + row.games + '</td>' +
+          '<td>' + linkHtml + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function renderGames() {
+      const rows = withResult.slice().sort(function (a, b) {
+        return a.game - b.game || a.placement - b.placement || a.player.localeCompare(b.player);
+      });
+
+      let currentGame = null;
+      let groupIndex = -1;
+      let html = '';
+
+      rows.forEach(function (row) {
+        if (row.game !== currentGame) {
+          if (currentGame !== null) {
+            html += '<tr class="game-separator"><td colspan="6"></td></tr>';
+          }
+          currentGame = row.game;
+          groupIndex += 1;
+        }
+
+        const groupClass = groupIndex % 2 === 0 ? 'game-group-a' : 'game-group-b';
+        const resultClass = row.result === 'Win' ? 'win' : (row.result === 'Draw' ? 'draw' : 'loss');
+
+        html += '<tr class="' + groupClass + '">' +
+          '<td>' + row.game + '</td>' +
+          '<td>' + row.player + '</td>' +
+          '<td>' + row.deck + '</td>' +
+          '<td>' + row.placement + '</td>' +
+          '<td>' + row.points + '</td>' +
+          '<td class="' + resultClass + '">' + row.result + '</td>' +
+        '</tr>';
+      });
+
+      document.getElementById('gamesTable').innerHTML = html;
+    }
+
+    function renderAll() {
+      summarize();
+      renderPlayers();
+      renderDecks();
+      renderGames();
+    }
+
+    document.getElementById('loadSheetBtn').addEventListener('click', async function () {
+      const url = document.getElementById('sheetUrl').value.trim();
+      if (!url) {
+        alert('Cole a URL CSV publicada da sua planilha.');
+        return;
+      }
+
+      try {
+        setStatus('Carregando planilha...');
+        await loadSheetData(url);
+      } catch (error) {
+        setStatus('Erro ao carregar a planilha. Mantidos os dados atuais.');
+        alert(error.message || 'Erro ao carregar a planilha.');
+      }
+    });
+
+    document.getElementById('useSampleBtn').addEventListener('click', function () {
+      currentData = sampleData.slice();
+      withResult = addResult(currentData);
+      renderAll();
+      setStatus('Usando os dados de exemplo.');
+    });
+
+    window.addEventListener('DOMContentLoaded', async function () {
+      const defaultUrl = document.getElementById('sheetUrl').value;
+      try {
+        setStatus('Carregando planilha automaticamente...');
+        await loadSheetData(defaultUrl);
+      } catch (error) {
+        setStatus('Não foi possível carregar a planilha automaticamente. Usando dados de exemplo.');
+        currentData = sampleData.slice();
+        withResult = addResult(currentData);
+        renderAll();
+      }
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
