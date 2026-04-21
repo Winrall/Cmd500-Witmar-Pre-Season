@@ -332,9 +332,7 @@ const seasonFiles = {
     }
 
     function parseGoogleSheetCsv(text) {
-      const lines = text.split(/
-?
-/);
+const lines = text.split('\\n');
       if (!lines.length) return [];
 
       const headerLine = lines.find(function (line) { return line.trim() !== ''; });
