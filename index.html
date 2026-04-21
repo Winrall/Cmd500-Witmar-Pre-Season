@@ -200,70 +200,74 @@
     </div>
 
 
-    <div class="tables section">
-      <div class="card">
-        <h2>Ranking de Jogadores</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Jogador</th>
-              <th>Pontos</th>
-              <th>Winrate</th>
-              <th>Wins</th>
-              <th>Jogos</th>
-            </tr>
-          </thead>
-          <tbody id="playersTable"></tbody>
-        </table>
-      </div>
-
-      <div class="card">
-        <h2>Ranking de Decks</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Deck</th>
-              <th>Pontos</th>
-              <th>Winrate</th>
-              <th>Wins</th>
-              <th>Jogos</th>
-              <th>Deck List</th>
-            </tr>
-          </thead>
-          <tbody id="decksTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="grid" id="summaryCards"></div>
-
-      <div class="card">
-        <h2>Fonte dos dados</h2>
-        <div class="hint">Este site carrega arquivos CSV hospedados no mesmo repositório do GitHub Pages. Para atualizar os rankings, basta atualizar os CSVs da temporada correspondente.</div>
-        <div id="sourceInfo" class="status"></div>
-      </div>
-    </div>
-
-    <div class="card section">
-      <h2>Todas as Participações</h2>
-      <div class="small">Pontuação atual: win = 3, draw = 1, loss = 0.</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Game</th>
-            <th>Player</th>
-            <th>Deck</th>
-            <th>Placement</th>
-            <th>Points</th>
-            <th>Resultado</th>
-          </tr>
-        </thead>
-        <tbody id="gamesTable"></tbody>
-      </table>
-    </div>
+<div class="tables section">
+  <div class="card">
+    <h2>Ranking de Jogadores</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Jogador</th>
+          <th>Pontos</th>
+          <th>Winrate</th>
+          <th>Wins</th>
+          <th>Jogos</th>
+        </tr>
+      </thead>
+      <tbody id="playersTable"></tbody>
+    </table>
   </div>
+
+  <div class="card">
+    <h2>Ranking de Decks</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Deck</th>
+          <th>Pontos</th>
+          <th>Winrate</th>
+          <th>Wins</th>
+          <th>Jogos</th>
+          <th>Deck List</th>
+        </tr>
+      </thead>
+      <tbody id="decksTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MÉTRICAS -->
+<div class="grid" id="summaryCards"></div>
+
+<!-- FONTE -->
+<div class="card section">
+  <h2>Fonte dos dados</h2>
+  <div class="hint">
+    Este site carrega arquivos CSV hospedados no mesmo repositório do GitHub Pages.
+    Para atualizar os rankings, basta atualizar os CSVs da temporada correspondente.
+  </div>
+  <div id="sourceInfo" class="status"></div>
+</div>
+
+<!-- TABELA -->
+<div class="card section">
+  <h2>Todas as Participações</h2>
+  <div class="small">Pontuação atual: win = 3, draw = 1, loss = 0.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Game</th>
+        <th>Player</th>
+        <th>Deck</th>
+        <th>Placement</th>
+        <th>Points</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    <tbody id="gamesTable"></tbody>
+  </table>
+</div>
 
   <script>
 const seasonFiles = {
